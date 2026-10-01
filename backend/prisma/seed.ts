@@ -30,7 +30,7 @@ const BANNERS = [
   { title: 'Acid Wash Series', subtitle: 'Hand-finished stone wash — every piece is one of one.', image: '/images/acid-tunnel-walk.jpg', link: '/shop?c=acid-wash', position: 1 },
   { title: 'Built to Layer', subtitle: 'Clean everyday essentials in heavyweight cotton.', image: '/images/process-stripes.jpg', link: '/shop?c=essentials', position: 2 },
 ];
-const SETTINGS: Record<string, string> = { storeName: 'Eleganto', tagline: 'Different is Beautiful', currency: '৳', freeShippingOver: '3000', supportEmail: '', supportPhone: '', facebook: 'https://www.facebook.com/elegantooooo', whatsapp: '', bkash: '', nagad: '' };
+const SETTINGS: Record<string, string> = { storeName: 'Eleganto', tagline: 'Different is Beautiful', currency: '৳', freeShippingOver: '3000', supportEmail: '', supportPhone: '', facebook: 'https://www.facebook.com/elegantooooo', whatsapp: '', bkash: '01789999751', nagad: '01789999751' };
 
 async function main() {
   mkdirSync(SEED_UPLOADS, { recursive: true });
@@ -50,7 +50,10 @@ async function main() {
   }
 
   // Settings — only fill missing keys, never overwrite values saved from the admin
-  for (const [key, value] of Object.entries(SETTINGS)) await prisma.siteSetting.upsert({ where: { key }, update: {}, create: { key, value } });
+  for (const [key, value] of Object.entries(SETTINGS)) {
+    await prisma.siteSetting.upsert({ where: { key }, update: {}, create: { key, value } });
+    if (value) await prisma.siteSetting.updateMany({ where: { key, value: '' }, data: { value } });
+  }
 
   // Accounts
   await prisma.user.upsert({ where: { email: 'admin@eleganto.com' }, update: { role: 'ADMIN' }, create: { name: 'Eleganto Admin', email: 'admin@eleganto.com', passwordHash: hash('Admin123!'), role: 'ADMIN' } });

@@ -13,8 +13,8 @@ export const site = {
   // TODO: client's public email + phone. Rows are hidden in the footer while empty.
   email: "",
   phone: "",
-  bkash: "",
-  nagad: "",
+  bkash: "01789999751",
+  nagad: "01789999751",
   currency: "৳",
   freeShippingOver: 3000,
   zones: [
