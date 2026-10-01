@@ -1,0 +1,14 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/account/page": "app/account/page.js",
+  "/checkout/page": "app/checkout/page.js",
+  "/help/page": "app/help/page.js",
+  "/icon.jpg/route": "app/icon.jpg/route.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js",
+  "/product/[slug]/page": "app/product/[slug]/page.js",
+  "/register/page": "app/register/page.js",
+  "/shop/page": "app/shop/page.js",
+  "/wishlist/page": "app/wishlist/page.js"
+}

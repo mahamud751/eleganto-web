@@ -1,0 +1,12 @@
+'use client';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useAuth } from './auth';
+
+const field = 'h-13 w-full border border-line bg-white px-4 text-sm outline-none transition focus:border-ink';
+export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
+  const { login, register } = useAuth(); const router = useRouter(); const [error, setError] = useState(''); const [busy, setBusy] = useState(false);
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => { e.preventDefault(); setBusy(true); setError(''); const data = Object.fromEntries(new FormData(e.currentTarget)); try { if (mode === 'login') await login(String(data.email), String(data.password)); else await register({ name: String(data.name), email: String(data.email), phone: String(data.phone || ''), password: String(data.password) }); router.push('/account'); } catch (err) { setError(err instanceof Error ? err.message : 'Unable to continue'); } finally { setBusy(false); } };
+  return <div className="mx-auto max-w-md px-5 py-20"><p className="text-[10px] font-bold tracking-[.3em] text-muted uppercase">Eleganto members</p><h1 className="mt-3 text-4xl font-extrabold tracking-[-.05em] uppercase">{mode === 'login' ? 'Welcome back' : 'Create account'}</h1><p className="mt-3 text-sm text-muted">{mode === 'login' ? 'Sign in to track orders and manage your wishlist.' : 'Save favourites, see order history, and checkout faster.'}</p><form onSubmit={submit} className="mt-8 space-y-4">{mode === 'register' && <><input required name="name" className={field} placeholder="Full name" /><input name="phone" className={field} placeholder="Phone number" /></>}<input required type="email" name="email" className={field} placeholder="Email address" /><input required minLength={8} type="password" name="password" className={field} placeholder="Password (8+ characters)" />{error && <p className="bg-red-50 p-3 text-xs font-semibold text-red-700">{error}</p>}<button disabled={busy} className="h-14 w-full bg-ink text-xs font-bold tracking-[.25em] text-white uppercase disabled:opacity-50">{busy ? 'Please wait…' : mode === 'login' ? 'Sign in' : 'Create account'}</button></form><p className="mt-6 text-center text-sm text-muted">{mode === 'login' ? <>New here? <Link href="/register" className="font-bold text-ink underline">Create account</Link></> : <>Already registered? <Link href="/login" className="font-bold text-ink underline">Sign in</Link></>}</p></div>;
+}

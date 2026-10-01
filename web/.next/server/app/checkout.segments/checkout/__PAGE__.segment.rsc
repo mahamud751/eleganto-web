@@ -1,0 +1,24 @@
+1:"$Sreact.fragment"
+2:I[47257,["/_next/static/chunks/1yqt-ik9jona9.js","/_next/static/chunks/2h1sf2-4sm9h2.js"],"ClientPageRoot"]
+3:I[51848,["/_next/static/chunks/1yqt-ik9jona9.js","/_next/static/chunks/2h1sf2-4sm9h2.js","/_next/static/chunks/33tb55ak3nn9s.js"],"default"]
+6:I[97367,["/_next/static/chunks/1yqt-ik9jona9.js","/_next/static/chunks/2h1sf2-4sm9h2.js"],"OutletBoundary"]
+7:"$Sreact.suspense"
+b:I[97367,["/_next/static/chunks/1yqt-ik9jona9.js","/_next/static/chunks/2h1sf2-4sm9h2.js"],"ViewportBoundary"]
+c:I[97367,["/_next/static/chunks/1yqt-ik9jona9.js","/_next/static/chunks/2h1sf2-4sm9h2.js"],"MetadataBoundary"]
+d:I[27201,["/_next/static/chunks/1yqt-ik9jona9.js","/_next/static/chunks/2h1sf2-4sm9h2.js"],"IconMark"]
+f:I[39756,["/_next/static/chunks/1yqt-ik9jona9.js","/_next/static/chunks/2h1sf2-4sm9h2.js"],"default"]
+10:I[37457,["/_next/static/chunks/1yqt-ik9jona9.js","/_next/static/chunks/2h1sf2-4sm9h2.js"],"default"]
+a:X
+12:X
+12:C
+0:{"buildId":"qu12eT3XwZyK8b5GN60o3","data":[{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"Component":"$3","serverProvidedParams":{"searchParams":{},"params":{},"promises":["$@4","$@5"]}}],[["$","script","script-0",{"src":"/_next/static/chunks/33tb55ak3nn9s.js","async":true}]],["$","$L6",null,{"children":["$","$7",null,{"name":"Next.MetadataOutlet","children":"$@8"}]}]]}],"isPartial":"$@9","staleTime":"$a","varyParams":null},{"rsc":["$","$1","h",{"children":[null,["$","$Lb",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$Lc",null,{"children":["$","$7",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Eleganto | Different is Beautiful"}],["$","meta","1",{"name":"description","content":"Eleganto — oversized acid wash and graphic streetwear. Different is Beautiful."}],["$","meta","2",{"property":"og:title","content":"Eleganto | Different is Beautiful"}],["$","meta","3",{"property":"og:description","content":"New drop is live. Oversized acid wash & graphic tees."}],["$","meta","4",{"property":"og:image","content":"http://localhost:3000/images/look-stairs-duo.jpg"}],["$","meta","5",{"property":"og:type","content":"website"}],["$","meta","6",{"name":"twitter:card","content":"summary_large_image"}],["$","meta","7",{"name":"twitter:title","content":"Eleganto | Different is Beautiful"}],["$","meta","8",{"name":"twitter:description","content":"New drop is live. Oversized acid wash & graphic tees."}],["$","meta","9",{"name":"twitter:image","content":"http://localhost:3000/images/look-stairs-duo.jpg"}],["$","link","10",{"rel":"icon","href":"/icon.jpg?icon.2u4k18hb96wct.jpg","sizes":"170x170","type":"image/jpeg"}],["$","$Ld","11",{}]]}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"isPartial":"$@e","staleTime":"$a","varyParams":null},{"rsc":["$","$1","c",{"children":[null,["$","$Lf",null,{"parallelRouterKey":"children","template":["$","$L10",null,{}]}]]}],"isPartial":"$@11","staleTime":"$a","varyParams":"$12"}],"isUpgradeableISRFallback":false,"a":"$@13","rootVaryParams":null,"needsRuntimeRequest":"$@14"}
+4:{}
+5:"$0:data:0:rsc:props:children:0:props:serverProvidedParams:params"
+8:null
+14:true
+a:300
+a:C
+13:0
+e:"$undefined"
+11:"$undefined"
+9:"$undefined"
