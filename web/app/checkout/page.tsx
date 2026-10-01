@@ -16,6 +16,11 @@ const field =
   "h-12 w-full border border-line bg-white px-4 text-sm outline-none transition placeholder:text-black/30 focus:border-ink";
 const labelCls = "mb-2 block text-[10px] font-bold tracking-[0.25em] text-muted uppercase";
 
+const PAYMENT_OPTIONS = [{ id: "COD", label: "Cash on Delivery", icon: Banknote, tone: "bg-neutral-100" }, { id: "BKASH", label: "bKash", icon: Smartphone, tone: "bg-pink-50" }, { id: "NAGAD", label: "Nagad", icon: Smartphone, tone: "bg-orange-50" }] as const;
+type PaymentId = (typeof PAYMENT_OPTIONS)[number]["id"];
+// Until settings load (or if they fail) only COD is offered; admin toggles override this
+const DEFAULT_ENABLED: Record<PaymentId, boolean> = { COD: true, BKASH: false, NAGAD: false };
+
 export default function Checkout() {
   const { lines, subtotal, clear } = useCart();
   const [zone, setZone] = useState<string>(site.zones[0].id);
@@ -23,11 +28,21 @@ export default function Checkout() {
   const [placed, setPlaced] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [numberCopied, setNumberCopied] = useState(false);
-  const [payment, setPayment] = useState<"COD" | "BKASH" | "NAGAD">("COD");
+  const [payment, setPayment] = useState<PaymentId>("COD");
   const [paymentNumber, setPaymentNumber] = useState("");
   const [transactionId, setTransactionId] = useState("");
   const [paymentNumbers, setPaymentNumbers] = useState<{ bkash: string; nagad: string }>({ bkash: site.bkash, nagad: site.nagad });
-  useEffect(() => { fetch(`${API_URL}/settings`).then(response => response.ok ? response.json() : {}).then((settings: Record<string, string>) => setPaymentNumbers({ bkash: settings.bkash || site.bkash, nagad: settings.nagad || site.nagad })).catch(() => {}); }, []);
+  const [enabled, setEnabled] = useState<Record<PaymentId, boolean>>(DEFAULT_ENABLED);
+  useEffect(() => {
+    fetch(`${API_URL}/settings`).then(response => response.ok ? response.json() : {}).then((settings: Record<string, string>) => {
+      setPaymentNumbers({ bkash: settings.bkash || site.bkash, nagad: settings.nagad || site.nagad });
+      const on = (key: string, fallback: boolean) => settings[key] ? settings[key] === "true" : fallback;
+      const next = { COD: on("codEnabled", true), BKASH: on("bkashEnabled", false), NAGAD: on("nagadEnabled", false) };
+      setEnabled(next);
+      setPayment(current => next[current] ? current : (PAYMENT_OPTIONS.find(o => next[o.id])?.id ?? "COD"));
+    }).catch(() => {});
+  }, []);
+  const options = PAYMENT_OPTIONS.filter(o => enabled[o.id]);
 
   const z = site.zones.find((x) => x.id === zone)!;
   const delivery = subtotal >= site.freeShippingOver ? 0 : z.fee;
@@ -148,7 +163,7 @@ export default function Checkout() {
     <form onSubmit={submit} className="mx-auto grid max-w-[1280px] gap-12 px-4 py-12 sm:px-8 lg:grid-cols-[1.3fr_1fr] lg:py-16">
       <div>
         <h1 className="text-[40px] leading-none font-extrabold tracking-[-0.045em] uppercase">Checkout</h1>
-        <p className="mt-3 text-sm text-muted">Choose Cash on Delivery or complete a manual mobile payment.</p>
+        <p className="mt-3 text-sm text-muted">{enabled.COD && (enabled.BKASH || enabled.NAGAD) ? "Choose Cash on Delivery or complete a manual mobile payment." : enabled.COD ? "Pay with Cash on Delivery when your order arrives." : "Complete a manual mobile payment to place your order."}</p>
 
         <h2 className="mt-10 text-[12px] font-bold tracking-[0.3em] uppercase">Customer Information</h2>
         <div className="mt-5 grid gap-5 sm:grid-cols-2">
@@ -199,8 +214,8 @@ export default function Checkout() {
         </label>
 
         <h2 className="mt-10 text-[12px] font-bold tracking-[0.3em] uppercase">Payment method</h2>
-        <div className="mt-5 grid gap-3 sm:grid-cols-3">
-          {([{ id: "COD", label: "Cash on Delivery", icon: Banknote, tone: "bg-neutral-100" }, { id: "BKASH", label: "bKash", icon: Smartphone, tone: "bg-pink-50" }, { id: "NAGAD", label: "Nagad", icon: Smartphone, tone: "bg-orange-50" }] as const).map(option => <button type="button" key={option.id} onClick={() => setPayment(option.id)} className={`relative flex min-h-28 flex-col items-start justify-between border p-4 text-left transition ${payment === option.id ? 'border-ink ring-1 ring-ink' : 'border-line hover:border-black/30'} ${option.tone}`}><option.icon className="size-5"/><span className="text-xs font-bold uppercase">{option.label}</span>{payment === option.id && <span className="absolute top-3 right-3 grid size-5 place-items-center rounded-full bg-ink text-white"><Check className="size-3"/></span>}</button>)}
+        <div className={`mt-5 grid gap-3 ${options.length === 3 ? "sm:grid-cols-3" : options.length === 2 ? "sm:grid-cols-2" : ""}`}>
+          {options.map(option => <button type="button" key={option.id} onClick={() => setPayment(option.id)} className={`relative flex min-h-28 flex-col items-start justify-between border p-4 text-left transition ${payment === option.id ? 'border-ink ring-1 ring-ink' : 'border-line hover:border-black/30'} ${option.tone}`}><option.icon className="size-5"/><span className="text-xs font-bold uppercase">{option.label}</span>{payment === option.id && <span className="absolute top-3 right-3 grid size-5 place-items-center rounded-full bg-ink text-white"><Check className="size-3"/></span>}</button>)}
         </div>
         {payment === "COD" ? <div className="mt-4 flex items-center gap-3 border border-line p-5"><ShieldCheck className="size-5" strokeWidth={1.5}/><div><p className="text-sm font-bold uppercase">Pay at your doorstep</p><p className="text-xs text-muted">Check the parcel and pay the delivery agent in cash.</p></div></div> : <div className={`mt-4 border p-5 ${payment === 'BKASH' ? 'border-pink-200 bg-pink-50' : 'border-orange-200 bg-orange-50'}`}><p className="text-sm font-bold">Send Money with {payment === 'BKASH' ? 'bKash' : 'Nagad'}</p>{(payment === 'BKASH' ? paymentNumbers.bkash : paymentNumbers.nagad) && <div className="mt-3 flex items-center justify-between gap-3 border border-black/10 bg-white px-4 py-3"><div><p className="text-[10px] font-bold tracking-[0.25em] text-muted uppercase">{payment === 'BKASH' ? 'bKash' : 'Nagad'} number (Personal)</p><p className="text-xl font-extrabold tracking-wide">{payment === 'BKASH' ? paymentNumbers.bkash : paymentNumbers.nagad}</p></div><button type="button" onClick={async () => { try { await navigator.clipboard.writeText(payment === 'BKASH' ? paymentNumbers.bkash : paymentNumbers.nagad); setNumberCopied(true); setTimeout(() => setNumberCopied(false), 1500); } catch {} }} className="flex items-center gap-2 border border-ink px-3 py-2 text-[10px] font-bold tracking-[0.2em] uppercase">{numberCopied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}{numberCopied ? 'Copied' : 'Copy'}</button></div>}<ol className="mt-3 space-y-1 text-xs text-neutral-600"><li>1. Send Money the exact total <strong>{money(total)}</strong> to <strong>{payment === 'BKASH' ? (paymentNumbers.bkash || 'the shop bKash number') : (paymentNumbers.nagad || 'the shop Nagad number')}</strong>.</li><li>2. Enter your sender number and transaction ID below.</li><li>3. We will manually verify payment before dispatch.</li></ol><div className="mt-4 grid gap-3 sm:grid-cols-2"><input required value={paymentNumber} onChange={e=>setPaymentNumber(e.target.value)} className={field} placeholder="Sender mobile number"/><input required value={transactionId} onChange={e=>setTransactionId(e.target.value)} className={field} placeholder="Transaction ID"/></div></div>}
       </div>

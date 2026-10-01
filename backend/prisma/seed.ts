@@ -30,7 +30,7 @@ const BANNERS = [
   { title: 'Acid Wash Series', subtitle: 'Hand-finished stone wash — every piece is one of one.', image: '/images/acid-tunnel-walk.jpg', link: '/shop?c=acid-wash', position: 1 },
   { title: 'Built to Layer', subtitle: 'Clean everyday essentials in heavyweight cotton.', image: '/images/process-stripes.jpg', link: '/shop?c=essentials', position: 2 },
 ];
-const SETTINGS: Record<string, string> = { storeName: 'Eleganto', tagline: 'Different is Beautiful', currency: '৳', freeShippingOver: '3000', supportEmail: '', supportPhone: '', facebook: 'https://www.facebook.com/elegantooooo', whatsapp: '', bkash: '01789999751', nagad: '01789999751' };
+const SETTINGS: Record<string, string> = { storeName: 'Eleganto', tagline: 'Different is Beautiful', currency: '৳', freeShippingOver: '3000', supportEmail: '', supportPhone: '', facebook: 'https://www.facebook.com/elegantooooo', whatsapp: '', bkash: '01789999751', nagad: '01789999751', codEnabled: 'true', bkashEnabled: 'false', nagadEnabled: 'false' };
 
 async function main() {
   mkdirSync(SEED_UPLOADS, { recursive: true });
