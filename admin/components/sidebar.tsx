@@ -1,8 +1,10 @@
 'use client';
 import Link from 'next/link';
-import { ArrowUpRight, ImageIcon, LayoutDashboard, Settings, ShoppingBag, Shirt, Users } from 'lucide-react';
+import { ArrowUpRight, ImageIcon, LayoutDashboard, LogOut, Settings, ShoppingBag, Shirt, Users } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { STORE_URL } from '@/lib/format';
+import { logout } from '@/lib/actions';
+import type { Admin } from '@/lib/session';
 
 const groups = [
   { caption: 'Overview', links: [{ href: '/', label: 'Dashboard', icon: LayoutDashboard }] },
@@ -10,7 +12,8 @@ const groups = [
   { caption: 'Storefront', links: [{ href: '/banners', label: 'Banners', icon: ImageIcon }, { href: '/settings', label: 'Settings', icon: Settings }] },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ admin }: { admin: Admin }) {
+  const initials = admin.name.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'AD';
   const path = usePathname();
   const active = (href: string) => path === href || (href !== '/' && path.startsWith(href));
   return <aside className="sidebar">
@@ -20,6 +23,6 @@ export default function Sidebar() {
       <div className="space-y-1">{g.links.map(({ href, label, icon: Icon }) => <Link className={`nav-link ${active(href) ? 'active' : ''}`} href={href} key={href} title={label}><Icon size={18} strokeWidth={1.9} /><span className="nav-label">{label}</span></Link>)}</div>
     </div>)}</nav>
     <a href={STORE_URL} target="_blank" rel="noreferrer" className="nav-link mb-3 border border-line" title="View storefront"><ArrowUpRight size={18} /><span className="nav-label">View storefront</span></a>
-    <div className="flex items-center gap-3 border-t border-line px-2 pt-4"><div className="grid size-9 flex-none place-items-center rounded-full bg-accent text-xs font-black">AD</div><div className="nav-label"><p className="text-xs font-bold">Admin</p><p className="text-[11px] text-muted">Store manager</p></div></div>
+    <div className="flex items-center gap-3 border-t border-line px-2 pt-4"><div className="grid size-9 flex-none place-items-center rounded-full bg-accent text-xs font-black">{initials}</div><div className="nav-label min-w-0 flex-1"><p className="truncate text-xs font-bold">{admin.name}</p><p className="truncate text-[11px] text-muted">{admin.email}</p></div><form action={logout} className="nav-label"><button className="icon-btn" title="Sign out" aria-label="Sign out"><LogOut size={15} /></button></form></div>
   </aside>;
 }

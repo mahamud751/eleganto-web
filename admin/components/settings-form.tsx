@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { CreditCard, Headset, Loader2, Share2, Store } from 'lucide-react';
-import { API } from '@/lib/api';
+import { CLIENT_API } from '@/lib/api';
 import { Label, useToast } from './ui';
 
 const GROUPS = [
@@ -20,7 +20,7 @@ export default function SettingsForm({ initial }: { initial: Record<string, stri
   const submit = async (e: React.FormEvent) => {
     e.preventDefault(); setSaving(true);
     const body = Object.fromEntries(GROUPS.flatMap(g => g.fields.map(([k]) => [k, values[k] || ''])));
-    const r = await fetch(`${API}/settings`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).catch(() => null);
+    const r = await fetch(`${CLIENT_API}/settings`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).catch(() => null);
     setSaving(false);
     if (r?.ok) { setSaved(values); notify('Settings saved'); } else notify('Could not save settings', 'error');
   };

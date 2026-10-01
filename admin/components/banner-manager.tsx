@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { ImageIcon, ImagePlus, Link2, Loader2, Pencil, Plus, Trash2, X } from 'lucide-react';
-import { API, Banner } from '@/lib/api';
+import { CLIENT_API, Banner } from '@/lib/api';
 import { img } from '@/lib/format';
 import { Empty, Label, Switch, uploadImage, useConfirm, useToast } from './ui';
 
@@ -18,13 +18,13 @@ export default function BannerManager({ initial }: { initial: Banner[] }) {
   const set = <K extends keyof Draft>(k: K, v: Draft[K]) => setD(c => ({ ...c, [k]: v }));
   const sorted = [...items].sort((a, b) => a.position - b.position);
 
-  const upload = async (file?: File) => { if (!file) return; setUploading(true); try { set('image', await uploadImage(API, file)); } catch (e) { notify(e instanceof Error ? e.message : 'Upload failed', 'error'); } finally { setUploading(false); } };
+  const upload = async (file?: File) => { if (!file) return; setUploading(true); try { set('image', await uploadImage(CLIENT_API, file)); } catch (e) { notify(e instanceof Error ? e.message : 'Upload failed', 'error'); } finally { setUploading(false); } };
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!d.title.trim() || !d.image) return notify('Title and image are required', 'error');
     setSaving(true);
     const body = { title: d.title.trim(), subtitle: d.subtitle.trim() || null, image: d.image, link: d.link.trim() || null, position: Number(d.position) || 0, active: d.active };
-    const r = await fetch(`${API}/banners${d.id ? `/${d.id}` : ''}`, { method: d.id ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).catch(() => null);
+    const r = await fetch(`${CLIENT_API}/banners${d.id ? `/${d.id}` : ''}`, { method: d.id ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).catch(() => null);
     setSaving(false);
     if (!r?.ok) return notify('Could not save banner', 'error');
     const saved: Banner = await r.json();
@@ -33,12 +33,12 @@ export default function BannerManager({ initial }: { initial: Banner[] }) {
   };
   const toggle = async (b: Banner) => {
     setItems(x => x.map(y => y.id === b.id ? { ...y, active: !b.active } : y));
-    const r = await fetch(`${API}/banners/${b.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ active: !b.active }) }).catch(() => null);
+    const r = await fetch(`${CLIENT_API}/banners/${b.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ active: !b.active }) }).catch(() => null);
     if (!r?.ok) { setItems(x => x.map(y => y.id === b.id ? { ...y, active: b.active } : y)); notify('Could not update banner', 'error'); }
   };
   const remove = async (b: Banner) => {
     if (!await confirm('Delete banner?', `"${b.title}" will be removed from the homepage.`)) return;
-    const r = await fetch(`${API}/banners/${b.id}`, { method: 'DELETE' }).catch(() => null);
+    const r = await fetch(`${CLIENT_API}/banners/${b.id}`, { method: 'DELETE' }).catch(() => null);
     if (r?.ok) { setItems(x => x.filter(y => y.id !== b.id)); if (d.id === b.id) setD(blank(items.length - 1)); notify('Banner deleted'); } else notify('Could not delete banner', 'error');
   };
 

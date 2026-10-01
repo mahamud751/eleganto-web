@@ -1,7 +1,7 @@
 'use client';
 import { Fragment, useState } from 'react';
 import { ChevronDown, Copy, MapPin, Phone, ShoppingBag, StickyNote } from 'lucide-react';
-import { API, Order } from '@/lib/api';
+import { CLIENT_API, Order } from '@/lib/api';
 import { ORDER_STATUSES, money, orderTone } from '@/lib/format';
 import { Empty, SearchBox, Tabs, useToast } from './ui';
 
@@ -16,7 +16,7 @@ export default function OrderManager({ initial, initialStatus = 'ALL' }: { initi
 
   const update = async (o: Order, next: string) => {
     setOrders(x => x.map(y => y.id === o.id ? { ...y, status: next } : y));
-    const r = await fetch(`${API}/orders/${o.id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: next }) }).catch(() => null);
+    const r = await fetch(`${CLIENT_API}/orders/${o.id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: next }) }).catch(() => null);
     if (r?.ok) notify(`${o.orderNumber} marked ${next.toLowerCase()}`);
     else { setOrders(x => x.map(y => y.id === o.id ? { ...y, status: o.status } : y)); notify('Could not update status', 'error'); }
   };

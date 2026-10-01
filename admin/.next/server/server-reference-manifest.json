@@ -1,5 +1,53 @@
 {
-  "node": {},
+  "node": {
+    "007c2bc7030d83fc93d804a9c3f47306f7c518688b": {
+      "workers": {
+        "app/(panel)/banners/page": {
+          "moduleId": 46751,
+          "async": false,
+          "codeHash": null
+        },
+        "app/(panel)/orders/page": {
+          "moduleId": 93450,
+          "async": false,
+          "codeHash": null
+        },
+        "app/(panel)/page": {
+          "moduleId": 10248,
+          "async": false,
+          "codeHash": null
+        },
+        "app/(panel)/products/page": {
+          "moduleId": 75537,
+          "async": false,
+          "codeHash": null
+        },
+        "app/(panel)/settings/page": {
+          "moduleId": 26381,
+          "async": false,
+          "codeHash": null
+        },
+        "app/(panel)/users/page": {
+          "moduleId": 6365,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "filename": "admin/lib/actions.ts",
+      "exportedName": "logout"
+    },
+    "60b573b6519e657d34c8d1d64741652a11f60bab89": {
+      "workers": {
+        "app/login/page": {
+          "moduleId": 35721,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "filename": "admin/lib/actions.ts",
+      "exportedName": "login"
+    }
+  },
   "edge": {},
   "encryptionKey": "sO5GGlwPVykWzJ1mziA8rdDHddmw+JTyGTT+YYCwgQw="
 }

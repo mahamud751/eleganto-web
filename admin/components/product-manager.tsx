@@ -1,7 +1,7 @@
 'use client';
 import { useMemo, useState } from 'react';
 import { AlertCircle, Copy, Eye, EyeOff, Layers, Loader2, Package, PackageX, Pencil, Plus, Shirt, Trash2, X } from 'lucide-react';
-import { API, Product } from '@/lib/api';
+import { CLIENT_API, Product } from '@/lib/api';
 import { img, money, titleCase } from '@/lib/format';
 import { Empty, Label, SearchBox, Section, Switch, Tabs, uploadImage, useConfirm, useEscape, useToast } from './ui';
 import { Color, ColorPicker, ImageManager, ListEditor, SizePicker, TagPicker } from './product-fields';
@@ -51,13 +51,13 @@ export default function ProductManager({ initial, openNew = false }: { initial: 
 
   const togglePublished = async (p: Product) => {
     setItems(list => list.map(x => x.id === p.id ? { ...x, published: !p.published } : x));
-    const r = await fetch(`${API}/products/${p.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ published: !p.published }) }).catch(() => null);
+    const r = await fetch(`${CLIENT_API}/products/${p.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ published: !p.published }) }).catch(() => null);
     if (r?.ok) notify(p.published ? `"${p.name}" moved to drafts` : `"${p.name}" is live`);
     else { setItems(list => list.map(x => x.id === p.id ? { ...x, published: p.published } : x)); notify('Could not update status', 'error'); }
   };
   const remove = async (p: Product) => {
     if (!await confirm('Delete product?', `"${p.name}" will be removed from your catalogue permanently. Products with existing orders cannot be deleted — move them to drafts instead.`)) return;
-    const r = await fetch(`${API}/products/${p.id}`, { method: 'DELETE' }).catch(() => null);
+    const r = await fetch(`${CLIENT_API}/products/${p.id}`, { method: 'DELETE' }).catch(() => null);
     if (r?.ok) { setItems(list => list.filter(x => x.id !== p.id)); notify('Product deleted'); }
     else notify('Could not delete — this product may have orders', 'error');
   };
@@ -128,7 +128,7 @@ function ProductEditor({ initial, categories, onClose, onSaved }: { initial: Dra
   const upload = async (files: File[]) => {
     if (!files.length) return;
     setUploading(true);
-    try { const urls: string[] = []; for (const f of files) urls.push(await uploadImage(API, f)); setD(cur => ({ ...cur, images: [...cur.images, ...urls] })); notify(`${urls.length} photo${urls.length > 1 ? 's' : ''} uploaded`); }
+    try { const urls: string[] = []; for (const f of files) urls.push(await uploadImage(CLIENT_API, f)); setD(cur => ({ ...cur, images: [...cur.images, ...urls] })); notify(`${urls.length} photo${urls.length > 1 ? 's' : ''} uploaded`); }
     catch (e) { notify(e instanceof Error ? e.message : 'Upload failed', 'error'); }
     finally { setUploading(false); }
   };
@@ -139,7 +139,7 @@ function ProductEditor({ initial, categories, onClose, onSaved }: { initial: Dra
     setSaving(true);
     const body = { name: d.name.trim(), slug: d.slug, price: Number(d.price), inventory: Number(d.inventory), category: d.category, fabric: d.fabric.trim(), published: d.published, colorName: d.colors[0].name, colorHex: d.colors[0].hex, colors: d.colors, sizes: d.sizes, images: d.images, tags: d.tags, details: d.details.map(x => x.trim()).filter(Boolean) };
     try {
-      const r = await fetch(`${API}/products${d.id ? `/${d.id}` : ''}`, { method: d.id ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const r = await fetch(`${CLIENT_API}/products${d.id ? `/${d.id}` : ''}`, { method: d.id ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       if (!r.ok) { const data = await r.json().catch(() => ({})); throw new Error(r.status >= 500 || !data.message ? 'Could not save. Make sure the URL slug is unique.' : String(data.message)); }
       onSaved(await r.json(), !d.id);
     } catch (err) { setServerError(err instanceof Error ? err.message : 'Could not save product'); }
